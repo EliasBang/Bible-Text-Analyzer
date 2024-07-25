@@ -128,7 +128,7 @@ def most_common_words_in_text(text_content):
     word_counts.update(words)
             
     # Get the 5 most common words
-    most_common = word_counts.most_common(40)
+    most_common = word_counts.most_common(5)
     return most_common
 
 # Introduction
@@ -374,8 +374,8 @@ for chapter_html in html_contents:
     soup = parse_html(chapter_html)
     class_content = find_elements(soup, active_testament2[file_index], chapter_loop)
     text_content, combined_text = extract_text(class_content)
-    #text_contents.append(text_content)
-    #combined_texts.append(combined_text)
+    text_contents.append(text_content)
+    combined_texts.append(combined_text)
     if combined_text:
         complete_text += f"Chapter {chapter_loop} \n{combined_text}\n\n{'-'*40}\n\n"
 
@@ -424,8 +424,7 @@ while True:
     elif choice == 2:    
         common_words = most_common_words_in_text(combined_text)
         print("Most common words:")
+        print("-------")
         for word, count in common_words:
             print(f"'{word}': {count}")
-        
-    for i in range(5):
-        print("-------")
+            print("-------")
