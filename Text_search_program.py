@@ -29,25 +29,25 @@ def parse_html(html_content):
     # Parse the HTML content
     soup = BeautifulSoup(html_content, 'html.parser')
     return soup
-
+    
 def find_elements(soup, book, chapter):
     class_content = []
     verse_number = 1
-
+    
     while True:
         # Construct the class name dynamically
         class_name = f"text {book}-{chapter}-{verse_number}"
-
+        
         # Find all elements with the constructed class name
         elements = soup.find_all(class_=class_name)
-
+        
         if not elements:  # If no elements found, exit the loop
             break
-
+        
         class_content.extend(elements)
         verse_number += 1
     return class_content
-
+    
 def extract_text(class_content):
     if class_content:
         # Extract text from found elements
@@ -76,7 +76,7 @@ def find_words_in_text(text_content, words_to_find):
     found_words = []
     found_lines = {}
     lemmatized_words_to_find = {lemmatizer.lemmatize(word.lower()) for word in words_to_find}
-
+    
     # Split text into lines and track chapter
     lines = text_content.split('\n')
     chapter = 0
@@ -92,41 +92,41 @@ def find_words_in_text(text_content, words_to_find):
                     lemmatized_word = lemmatizer.lemmatize(word.lower())
                     if lemmatized_word in lemmatized_words_to_find:
                         found_words.append((word, chapter, line_number, word_position)) # Store word, chapter, line number, and word position
-
+                
     return found_words, found_lines
 
 def most_common_words_in_text(text_content):
     # Initialize an empty Counter to store word counts
     word_counts = Counter()
-
+      
     # Define common words to exclude
     common_words = [
-        "of", "my", "me", "on", "it", "not", "as", "who", "our", "have", "may", "people", "men", "she", "said", "will", "ord", "shall",
-        "your", "to", "he", "his", "in", "was", "by", "a", "for", "is", "from", "when", "they", "you", "with", "that", "were", "then",
-        "all","had","i","him","the","and","or","but","so","yet","because","although","since", "them", "there", "this", "be", "therefore",
-        "however", "moreover", "furthermore", "nevertheless", "otherwise", "consequently", "hence", "thus", "meanwhile", "nonetheless", "likewise",
-        "up", "out", "now", "at", "go", "their", "did", "before", "her", "has", "down", "are", "us", "these", "no"
-    ]
-
+            "of", "my", "me", "on", "it", "not", "as", "who", "our", "have", "may", "people", "men", "she", "said", "will", "ord", "shall", 
+            "your", "to", "he", "his", "in", "was", "by", "a", "for", "is", "from", "when", "they", "you", "with", "that", "were", "then",
+            "all","had","i","him","the","and","or","but","so","yet","because","although","since", "them", "there", "this", "be", "therefore",
+            "however", "moreover", "furthermore", "nevertheless", "otherwise", "consequently", "hence", "thus", "meanwhile", "nonetheless", "likewise", 
+            "up", "out", "now", "at", "go", "their", "did", "before", "her", "has", "down", "are", "us", "these", "no"
+            ]
+            
     # Convert common_words to lower case
     common_words = [word.lower() for word in common_words]
-
+    
     # Remove punctuation and convert text to lowercase
     cleaned_text = re.sub(r'[^?\w\s]', '', text_content.lower())
-
+    
     # Split text into words
     words = cleaned_text.split()
-
+    
     #Initialize Lemmatizer
     lemmatizer = WordNetLemmatizer()
-
+            
     # Lemmatize words and exclude common words
     words = [lemmatizer.lemmatize(word, get_wordnet_pos(word)) for word in words if word not in common_words]
-
+            
     # Update the word counts
     #word_counts = Counter(words)
     word_counts.update(words)
-
+            
     # Get the 5 most common words
     most_common = word_counts.most_common(40)
     return most_common
@@ -137,20 +137,20 @@ print("All scripture has been collected from https://www.biblegateway.com, on", 
 
 # User Interface for choosing what bible version to use
 bible_version = [
-    "1: English Standard Version (ESV)",
-    "2: King James Version (KJV)",
-    "3: New International Version (NIV)"
-]
+            "1: English Standard Version (ESV)",
+            "2: King James Version (KJV)",
+            "3: New International Version (NIV)"
+            ]
 bible_version_url = [
     "ESV",
     "KJV",
     "NIV"
-]
+    ]
 for version in bible_version:
     print(version)
-
+    
 while True:
-    try:
+    try: 
         selected_version = int(input("Write the number of the desired version: "))
         if 1 <= selected_version <= len(bible_version):
             break
@@ -162,172 +162,172 @@ selected_version = selected_version - 1
 # User Interface for choosing Old or New Testament
 print("\nPlease choose which Testament")
 while True:
-    try:
+    try: 
         ot_nt_input = int(input("Old Testament is 1, New Testament is 2: ")) # Boolean where 1 is True and everything else is false
         if ot_nt_input in [1, 2]:
             ot_nt = ot_nt_input == 1  # Assign True if input is 1, False otherwise
             break
     except ValueError:
         print("Please enter either 1 or 2")
-
+    
 # User Interface for choosing what book
 print("Nice, here is the list of books to choose from:")
 
 # Choosing 1 makes and prints a list of the Old Testment books
 if ot_nt == 1:
     old_testament = [
-        "1: Genesis",
-        "2: Exodus",
-        "3: Leviticus",
-        "4: Numbers",
-        "5: Deuteronomy",
-        "6: Joshua",
-        "7: Judges",
-        "8: Ruth",
-        "9: I Samuel",
-        "10: II Samuel",
-        "11: I Kings",
-        "12: II Kings",
-        "13: I Chronicles",
-        "14: II Chronicles",
-        "15: Ezra",
-        "16: Nehemiah",
-        "17: Esther",
-        "18: Job",
-        "19: Psalms",
-        "20: Proverbs",
-        "21: Ecclesiates",
-        "22: Song of Songs",
-        "23: Isaiah",
-        "24: Jeremiah",
-        "25: Lamentations",
-        "26: Ezekiel",
-        "27: Daniel",
-        "28: Hosea",
-        "29: Joel",
-        "30: Amos",
-        "31: Obadiah",
-        "32: Jonah",
-        "33: Micah",
-        "34: Nahum",
-        "35: Habakkuk",
-        "36: Zephaniah",
-        "37: Haggai",
-        "38: Zechariah",
-        "39: Malachi",
-    ]
+            "1: Genesis",
+            "2: Exodus",
+            "3: Leviticus",
+            "4: Numbers",
+            "5: Deuteronomy",
+            "6: Joshua",
+            "7: Judges",
+            "8: Ruth",
+            "9: I Samuel",
+            "10: II Samuel",
+            "11: I Kings",
+            "12: II Kings",
+            "13: I Chronicles",
+            "14: II Chronicles",
+            "15: Ezra",
+            "16: Nehemiah",
+            "17: Esther",
+            "18: Job",
+            "19: Psalms",
+            "20: Proverbs",
+            "21: Ecclesiates",
+            "22: Song of Songs",
+            "23: Isaiah",
+            "24: Jeremiah",
+            "25: Lamentations",
+            "26: Ezekiel",
+            "27: Daniel",
+            "28: Hosea",
+            "29: Joel",
+            "30: Amos",
+            "31: Obadiah",
+            "32: Jonah",
+            "33: Micah",
+            "34: Nahum",
+            "35: Habakkuk",
+            "36: Zephaniah",
+            "37: Haggai",
+            "38: Zechariah",
+            "39: Malachi",
+            ]
     old_testament_url = [
-        "Gen",
-        "Exod",
-        "Lev",
-        "Num",
-        "Deut",
-        "Josh",
-        "Judg",
-        "Ruth",
-        "1Sam",
-        "2Sam",
-        "1Kgs",
-        "2Kgs",
-        "1Chr",
-        "2Chr",
-        "Ezra",
-        "Neh",
-        "Esth",
-        "Job",
-        "Ps",
-        "Prov",
-        "Eccl",
-        "Song",
-        "Isa",
-        "Jer",
-        "Lam",
-        "Ezek",
-        "Dan",
-        "Hos",
-        "Joel",
-        "Amos",
-        "Obad",
-        "Jonah",
-        "Mic",
-        "Nah",
-        "Hab",
-        "Zeph",
-        "Hag",
-        "Zech",
-        "Mal",
-    ]
-
+            "Gen",
+            "Exod",
+            "Lev",
+            "Num",
+            "Deut",
+            "Josh",
+            "Judg",
+            "Ruth",
+            "1Sam",
+            "2Sam",
+            "1Kgs",
+            "2Kgs",
+            "1Chr",
+            "2Chr",
+            "Ezra",
+            "Neh",
+            "Esth",
+            "Job",
+            "Ps",
+            "Prov",
+            "Eccl",
+            "Song",
+            "Isa",
+            "Jer",
+            "Lam",
+            "Ezek",
+            "Dan",
+            "Hos",
+            "Joel",
+            "Amos",
+            "Obad",
+            "Jonah",
+            "Mic",
+            "Nah",
+            "Hab",
+            "Zeph",
+            "Hag",
+            "Zech",
+            "Mal",
+            ]
+    
 # Choosing anything else makes and prints a list of the New Testament books
 else:
     new_testament = [
-        "1: Matthew",
-        "2: Mark",
-        "3: Luke",
-        "4: John",
-        "5: Acts",
-        "6: Romans",
-        "7: I Corinthians",
-        "8: II Corinthians",
-        "9: Galatians",
-        "10: Ephesians",
-        "11: Philippians",
-        "12: Colossians",
-        "13: I Thessalonians",
-        "14: II Thessalonians",
-        "15: I Timothy",
-        "16: II Timothy",
-        "17: Titus",
-        "18: Philemon",
-        "19: Hebrews",
-        "20: James",
-        "21: I Peter",
-        "22: II Peter",
-        "23: I John",
-        "24: II John",
-        "25: III John",
-        "26: Jude",
-        "27: Revelation",
-    ]
+            "1: Matthew",
+            "2: Mark",
+            "3: Luke",
+            "4: John",
+            "5: Acts",
+            "6: Romans",
+            "7: I Corinthians",
+            "8: II Corinthians",
+            "9: Galatians",
+            "10: Ephesians",
+            "11: Philippians",
+            "12: Colossians",
+            "13: I Thessalonians",
+            "14: II Thessalonians",
+            "15: I Timothy",
+            "16: II Timothy",
+            "17: Titus",
+            "18: Philemon",
+            "19: Hebrews",
+            "20: James",
+            "21: I Peter",
+            "22: II Peter",
+            "23: I John",
+            "24: II John",
+            "25: III John",
+            "26: Jude",
+            "27: Revelation",
+            ]
     new_testament_url = [
-        "Matt",
-        "Mark",
-        "Luke",
-        "John",
-        "Acts",
-        "Rom",
-        "1Cor",
-        "2Cor",
-        "Gal",
-        "Eph",
-        "Phil",
-        "Col",
-        "1Thess",
-        "2Thess",
-        "1Tim",
-        "2Tim",
-        "Titus",
-        "Phlm",
-        "Heb",
-        "Jas",
-        "1Pet",
-        "2Pet",
-        "1John",
-        "2John",
-        "3John",
-        "Jude",
-        "Rev",
-    ]
-
+            "Matt",
+            "Mark",
+            "Luke",
+            "John",
+            "Acts",
+            "Rom",
+            "1Cor",
+            "2Cor",
+            "Gal",
+            "Eph",
+            "Phil",
+            "Col",
+            "1Thess",
+            "2Thess",
+            "1Tim",
+            "2Tim",
+            "Titus",
+            "Phlm",
+            "Heb",
+            "Jas",
+            "1Pet",
+            "2Pet",
+            "1John",
+            "2John",
+            "3John",
+            "Jude",
+            "Rev",
+            ]
+    
 active_testament = old_testament if ot_nt == 1 else new_testament
 active_testament2 = old_testament_url if ot_nt == 1 else new_testament_url
-
+    
 for book in active_testament:
     print(book)
 
 # Gets the relevant number from the list of books
 while True:
-    try:
+    try: 
         book_choice = int(input("Write the number of the book: "))
         if 1 <= book_choice <= len(active_testament):
             break
@@ -383,49 +383,49 @@ for chapter_html in html_contents:
 for i, text in enumerate(combined_texts):
     if text is None:
         logging.warning(f"None found at index {i}")
-
+        
 combined_text = '\n'.join(combined_texts)
-
+    
 while True:
     while True:
         # User Interface for choosing program
         print("Choose a mode:", "1 = Find word,", "2 = Find repeated words")
         try:
-            choice = int(input("Make your choice: "))
+            choice = int(input("Make your choice: ")) 
             if choice in [1, 2]:
                 break
         except ValueError:
             print("Please enter either 1 or 2")
-
+        
     # Find word in book
     if choice == 1:
         print("\nWhat words do you wish to find?")
         words_to_find = input().lower().split(",")
-
+        
         # Website find word result
         if complete_text:
             found_words, found_lines = find_words_in_text(complete_text, words_to_find)
             if found_words:
-                print("Found words:")
-                word_counter = 0
-                for word, chapter, line_number, word_position in found_words:
-                    word_counter += 1
-                print(words_to_find, "was found", word_counter, "times")
-                print("\nRelevant verses:")
-                for (chapter, line_number) in sorted(found_lines.keys()):
-                    print(f"Ch {chapter}: {found_lines[(chapter, line_number)]}") #found_lines[line_number])
+                 print("Found words:")
+                 word_counter = 0
+                 for word, chapter, line_number, word_position in found_words:
+                      word_counter += 1
+                 print(words_to_find, "was found", word_counter, "times")
+                 print("\nRelevant verses:")
+                 for (chapter, line_number) in sorted(found_lines.keys()):
+                     print(f"Ch {chapter}: {found_lines[(chapter, line_number)]}") #found_lines[line_number])
             else:
-                print("No words found.")
+                 print("No words found.")
         else:
-            print("No text content available.")
+            print("No text content available.")                
 
 
-            # Find repeated words in book
-    elif choice == 2:
+    # Find repeated words in book
+    elif choice == 2:    
         common_words = most_common_words_in_text(combined_text)
         print("Most common words:")
         for word, count in common_words:
             print(f"'{word}': {count}")
-
+        
     for i in range(5):
         print("-------")
